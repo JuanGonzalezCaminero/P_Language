@@ -47,7 +47,12 @@ static char *readStr(void);
 int yywrap(void) { return 1; }
 
 %}
+
 WSPC      ([ \t\f\r])
+
+COMMENT_SINGLE		("//".*)
+COMMENT_MULTI    	("/*"([^*]|\*+[^*/])*\*+"/")
+COMMENT 			({COMMENT_SINGLE}|{COMMENT_MULTI})
 
 LETTER    ([_a-zA-Z])
 DIGIT     ([0-9])
@@ -63,9 +68,9 @@ FLOAT1    ({DIGITS}"."{DIGITS})
 FLOAT2    ({DIGITS}{EXP})
 FLOAT3    ({DIGITS}"."{DIGITS}{EXP})
 
-STRSTART  (["])
+STRSTART  (["\'])
 
-STREND (["])
+STREND (['"])
 
 EOL	  ([';'])
 
@@ -82,9 +87,10 @@ EQUALS		  ("=")
 
 {WSPC}              ;
 
+{COMMENT}			;
+
 {IDENTIFIER}	{
-				//printf("IDENTIFIER\n");
-				unsigned i = 0;
+        				unsigned i = 0;
                 int r=-1;
                 char *res;
 
@@ -206,15 +212,41 @@ static char *readStr(void) {
 
   do {
     c = input();
+    //printf("%d\n", c);
 
     if (c < ' ') prError(yylineno,"Unexpected symbol in string literal [%d]\n",c,NULL);
-    if (c == '"') break;
+    if (c == '"' /* || c == 39 */) break;
 
     if (c=='\\') {
-      c == input();
-      if (c!='\\' && c !='"') {
-        unput(c);
-        c = '\\';
+      c = input();
+      switch(c){
+      	case 'n':
+      		c='\n';
+      		break;
+      	case 'a':
+      		c='\a';
+      		break;
+      	case 'b':
+      		c='\b';
+      		break;
+      	case 'f':
+      		c='\f';
+      		break;
+      	case 'r':
+      		c='\r';
+      		break;
+      	case 't':
+      		c='\t';
+      		break;
+      	case 'v':
+      		c='\v';
+      		break;
+      	case '\\':
+      		c='\\';
+      		break;
+      	default:
+      		unput(c);
+       		c = '\\';
       }
     }
 

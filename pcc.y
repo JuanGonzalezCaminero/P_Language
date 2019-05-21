@@ -11,6 +11,10 @@ FILE *fIn;
 int yyerror(char *str);
 
 static ast_t *astRoot = NULL;
+
+//Used to construct sub-trees associated to code blocks
+static ast_t *blockRoot = NULL;
+
 %}
 
 %union {
@@ -24,9 +28,9 @@ static ast_t *astRoot = NULL;
     }   s;
 }
 
-%type <s> program progelement conditional_statement statement expression block blockelement
+%type <s> program progelement conditional_statement statement expression block
 
-%token <s> IDENTIFIER EOL NUMBER STRING OPLOGIC OPARITHMETIC EQUALS IF WHILE ELSE SIN COS TAN ASIN ACOS ATAN LOG LOG10 EXP WRITE READ EQ NEQ NOT LESS LEQ GREATER GEQ AND OR '(' ')'
+%token <s> IDENTIFIER EOL NUMBER STRING IF WHILE ELSE SIN COS TAN ASIN ACOS ATAN LOG LOG10 EXP WRITE READ EQ NEQ NOT LESS LEQ GREATER GEQ AND OR '(' ')'
 %start program
 
 %left OR
@@ -59,10 +63,13 @@ program: program progelement
 			 astRoot = appR(';', astRoot, $1.u.ast);
 		 };
 
-progelement: conditional_statement|
+progelement: conditional_statement
+			 {
 				 //No sabemos qué tipo de statement va a ser, por tanto toma el valor que 
 				 //se le asigne más adelante
 				 $$ = $1;
+			 }|
+
 			 statement ';' 
 			 {
 				 //No sabemos qué tipo de statement va a ser, por tanto toma el valor que 
@@ -76,8 +83,20 @@ progelement: conditional_statement|
 			      $$.u.ast = NULL;
 		     };
 
-conditional_statement:	IF '(' expression ')' '{' block '}' |
+conditional_statement:	IF '(' expression ')' '{' block '}' 
+			{	
+				//Creamos un nodo con etiqueta IF, con hijos el árbol asociado a una expresión,
+				//cuyo valor será evaluado, y un subárbol asociado al bloque, que contiene las 
+				//sentencias dentro de él. Si la expresión evalúa a verdadero, se ejecutan las
+				//sentencias del bloque. Ocurre lo mismo con la sentencia While
+				$$.flag = fAST;
+			    $$.u.ast = mkNd(IF, $3.u.ast, $6.u.ast);
+			}|
 			WHILE '(' expression ')' '{' block '}'
+			{
+				$$.flag = fAST;
+			    $$.u.ast = mkNd(WHILE, $3.u.ast, $6.u.ast);
+			};
 
 statement: 	IDENTIFIER '=' expression
 			{	
@@ -109,6 +128,11 @@ statement: 	IDENTIFIER '=' expression
 				  //Para la función write hacemos lo mismo que con READ
 			      $$.flag = fAST;
 			      $$.u.ast = mkNd(WRITE, NULL, mkSlf(IDENTIFIER,$3.u.vStr));
+		    }|
+		    WRITE '(' STRING ')'
+		    {
+		    	$$.flag = fAST;
+      			$$.u.ast = mkNd(WRITE, mkSlf(STRING,$3.u.vStr), NULL);
 		    }|
 			WRITE '(' STRING ',' IDENTIFIER ')'
 			{		
@@ -148,6 +172,13 @@ expression:	IDENTIFIER
 			{	
 			      $$.flag = fAST;
 			      $$.u.ast = mkNd('-', $1.u.ast, $3.u.ast);
+		    }|
+		    '-' expression
+		    {
+		    	//Creamos un nodo con etiqueta '-' y un sólo hijo, el valor de la expresión
+		    	//que hay que negar
+		    	$$.flag = fAST;
+			    $$.u.ast = mkNd('-', NULL, $2.u.ast);
 		    }|
 			expression '/' expression 
 			{	
@@ -263,8 +294,30 @@ expression:	IDENTIFIER
       			  $$.u.ast = mkNd(EXP,$3.u.ast,NULL);
 			};
 
-block:	block blockelement|
-		blockelement;
+block:	block progelement
+		{
+			 //Añadimos una línea al subárbol, con etiqueta ";" y con hijos el nodo 
+			 //correspondiente a esta línea y las líneas siguientes
+			 blockRoot = appR(';', blockRoot, $2.u.ast);
+			 //$$.u.ast = blockRoot;
+			 //blockRoot = NULL;
+		}|
+		progelement
+		{
+			 //Añadimos al subárbol la primera línea del bloque, con etiqueta ";",
+			 //Devolvemos esta raíz, que será uno de los hijos del if o while al que
+			 //esté asociado este bloque
+			/*printf("First line\n");
+			if(blockRoot == NULL){
+				printf("Block root null\n");
+			}*/
+			 blockRoot = NULL;
+			 blockRoot = appR(';', blockRoot, $1.u.ast);
+			 $$.u.ast = blockRoot;
+			 
+			 //Hay que inicializar blockRoot para poder usarla con el siguiente bloque
+			 //blockRoot = NULL;
+		};
 
 
 %%
@@ -278,7 +331,7 @@ int yyerror(char *str) {
 extern FILE *yyin;
 
 int main(int argc, char *argv[]) {
-	/*
+
   if (argc!=2) {
     puts("\nUsage: program <filename>\n");
     fflush(stdout);
@@ -302,10 +355,12 @@ int main(int argc, char *argv[]) {
   }
 
   fclose(fIn);
-
+  evaluate(astRoot);
   return 0;
-  */
+  
+  
   yyparse();
   evaluate(astRoot);
   return 0;
+  
 }

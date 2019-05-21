@@ -53,32 +53,29 @@ extern int yydebug;
     EOL = 259,
     NUMBER = 260,
     STRING = 261,
-    OPLOGIC = 262,
-    OPARITHMETIC = 263,
-    EQUALS = 264,
-    IF = 265,
-    WHILE = 266,
-    ELSE = 267,
-    SIN = 268,
-    COS = 269,
-    TAN = 270,
-    ASIN = 271,
-    ACOS = 272,
-    ATAN = 273,
-    LOG = 274,
-    LOG10 = 275,
-    EXP = 276,
-    WRITE = 277,
-    READ = 278,
-    EQ = 279,
-    NEQ = 280,
-    NOT = 281,
-    LESS = 282,
-    LEQ = 283,
-    GREATER = 284,
-    GEQ = 285,
-    AND = 286,
-    OR = 287
+    IF = 262,
+    WHILE = 263,
+    ELSE = 264,
+    SIN = 265,
+    COS = 266,
+    TAN = 267,
+    ASIN = 268,
+    ACOS = 269,
+    ATAN = 270,
+    LOG = 271,
+    LOG10 = 272,
+    EXP = 273,
+    WRITE = 274,
+    READ = 275,
+    EQ = 276,
+    NEQ = 277,
+    NOT = 278,
+    LESS = 279,
+    LEQ = 280,
+    GREATER = 281,
+    GEQ = 282,
+    AND = 283,
+    OR = 284
   };
 #endif
 /* Tokens.  */
@@ -86,39 +83,36 @@ extern int yydebug;
 #define EOL 259
 #define NUMBER 260
 #define STRING 261
-#define OPLOGIC 262
-#define OPARITHMETIC 263
-#define EQUALS 264
-#define IF 265
-#define WHILE 266
-#define ELSE 267
-#define SIN 268
-#define COS 269
-#define TAN 270
-#define ASIN 271
-#define ACOS 272
-#define ATAN 273
-#define LOG 274
-#define LOG10 275
-#define EXP 276
-#define WRITE 277
-#define READ 278
-#define EQ 279
-#define NEQ 280
-#define NOT 281
-#define LESS 282
-#define LEQ 283
-#define GREATER 284
-#define GEQ 285
-#define AND 286
-#define OR 287
+#define IF 262
+#define WHILE 263
+#define ELSE 264
+#define SIN 265
+#define COS 266
+#define TAN 267
+#define ASIN 268
+#define ACOS 269
+#define ATAN 270
+#define LOG 271
+#define LOG10 272
+#define EXP 273
+#define WRITE 274
+#define READ 275
+#define EQ 276
+#define NEQ 277
+#define NOT 278
+#define LESS 279
+#define LEQ 280
+#define GREATER 281
+#define GEQ 282
+#define AND 283
+#define OR 284
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 
 union YYSTYPE
 {
-#line 16 "pcc.y" /* yacc.c:1921  */
+#line 20 "pcc.y" /* yacc.c:1921  */
 
     struct sStackType {
     unsigned char   flag;
@@ -129,7 +123,7 @@ union YYSTYPE
         }   u;
     }   s;
 
-#line 133 "y.tab.h" /* yacc.c:1921  */
+#line 127 "y.tab.h" /* yacc.c:1921  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -13,8 +13,11 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 extern int yylineno;
+
+//ast_t *block_root = NULL;
 
 
 ast_t *mkSlf(unsigned tag, char *str) {
@@ -67,14 +70,50 @@ ast_t *appR(unsigned tag, ast_t *lst, ast_t *nd) {
 
 static double expr(ast_t *root) {
     switch (tag(root)) {
-        case '<':
+        case LESS:
             if (expr(left(root)) < expr(right(root))) {
                 return 1.0;
             } else {
                 return 0.0;
             }
-        case '>':
+        case LEQ:
+            if (expr(left(root)) <= expr(right(root))) {
+                return 1.0;
+            } else {
+                return 0.0;
+            }
+        case GREATER:
             if (expr(left(root)) > expr(right(root))) {
+                return 1.0;
+            } else {
+                return 0.0;
+            }
+        case GEQ:
+            if (expr(left(root)) >= expr(right(root))) {
+                return 1.0;
+            } else {
+                return 0.0;
+            }
+        case AND:
+            if (expr(left(root)) && expr(right(root))) {
+                return 1.0;
+            } else {
+                return 0.0;
+            }
+        case OR:
+            if (expr(left(root)) || expr(right(root))) {
+                return 1.0;
+            } else {
+                return 0.0;
+            }
+        case EQ:
+            if (expr(left(root)) == expr(right(root))) {
+                return 1.0;
+            } else {
+                return 0.0;
+            }
+        case NEQ:
+            if (expr(left(root)) != expr(right(root))) {
                 return 1.0;
             } else {
                 return 0.0;
@@ -91,9 +130,11 @@ static double expr(ast_t *root) {
             return expr(left(root)) * expr(right(root));
         case '/':
             return expr(left(root)) / expr(right(root));
+        case '%':
+            return fmod(expr(left(root)), expr(right(root)));
         case '^':
             return pow( expr(left(root)), expr(right(root)) );
-        case '!':
+        case NOT:
             if (expr( right(root) ) == 0.0) {
                 return 1.0;
             } else {
@@ -115,6 +156,12 @@ static double expr(ast_t *root) {
             return acos( expr(left(root)) );
         case ATAN:
             return atan( expr(left(root)) );
+        case LOG:
+            return log( expr(left(root)) );
+        case LOG10:
+            return log10( expr(left(root)) );
+        case EXP:
+            return exp( expr(left(root)) );
         default:
             prError((unsigned short)lnum(root),"Unknown tag in expr AST %u\n",tag(root),NULL);
             break;
@@ -124,19 +171,23 @@ static double expr(ast_t *root) {
 static void proc(ast_t *root) {
     switch (tag(root)) {
         case '=':
+            //printf("Assignment\n");
             //printf("%lf\n", expr(right(root)));
             insertModify( sv(left(root)), expr(right(root)) );
             break;
         case WRITE:
+            //printf("WRITE\n");
             if (left(root) == NULL) {
-                printf("%g\n", expr(right(root)) );
+                printf("%g", expr(right(root)) );
             } else if (right(root) == NULL) {
-                puts( sv(left(root)) );
+                //puts( sv(left(root)) );
+                printf("%s", sv(left(root)));
             } else {
-                printf("%s%g\n", sv(left(root)), expr(right(root)) );
+                printf("%s%g", sv(left(root)), expr(right(root)) );
             }
             break;
         case READ:
+            //printf("READ\n");
             if (left(root) == NULL) {
                 double rval;
                 scanf("%lf",&rval);
@@ -148,6 +199,39 @@ static void proc(ast_t *root) {
                 insertModify( sv(right(root)), rval);
             }
             break;
+        case IF:
+            //printf("IF\n");
+            //Evaluamos la expresión asociada a la sentencia. Si el resultado es un número
+            //Positivo, ejecutamos el bloque de código asociado a la sentencia recorriendo 
+            //el subárbol con las sentencias del bloque
+
+            //Sentencia vacía, ya que C sólo permite poner una sentencia después de una 
+            //etiqueta, (en este caso IF:), pero las declaraciones no cuentan como sentencias,
+            //por tanto no se puede poner la declaración de block_root como la primera sentencia
+            //del caso
+            ;
+            ast_t *block_root = right(root);
+            //printf("Root tag: %d\n", tag(block_root));
+            if ( expr(left(root)) > 0 ){
+                while (block_root != NULL) {
+                    proc(left(block_root));
+                    block_root = right(block_root);
+                    //printf("Node tag: %d\n", tag(block_root));
+                }
+            }
+            break;
+
+        case WHILE:
+
+            while ( expr(left(root)) > 0 ){
+                block_root = right(root);
+                while (block_root != NULL) {
+                    proc(left(block_root));
+                    block_root = right(block_root);
+                }
+            }
+            break;
+
         default:
             prError((unsigned short)lnum(root),"Unknown tag in statement AST %u\n",tag(root),NULL);
             break;
