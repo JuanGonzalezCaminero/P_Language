@@ -6,7 +6,7 @@
 #include "astree.h"
 #include "token.h"
 
-#define KWLEN  14
+#define KWLEN  15
 char *keywords[KWLEN] = {
 	"if",
 	"while",
@@ -22,6 +22,7 @@ char *keywords[KWLEN] = {
 	"exp",
 	"read",
 	"write",
+  "for",
 };
 
 unsigned keycodes[KWLEN] = {
@@ -39,6 +40,7 @@ unsigned keycodes[KWLEN] = {
     EXP,
     READ,
     WRITE,
+    FOR,
 };
 
 static void lower(char *s);

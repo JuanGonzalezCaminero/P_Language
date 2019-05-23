@@ -210,9 +210,16 @@ static void proc(ast_t *root) {
             //por tanto no se puede poner la declaración de block_root como la primera sentencia
             //del caso
             ;
-            ast_t *block_root = right(root);
+            ast_t *block_root = left(right(root));
             //printf("Root tag: %d\n", tag(block_root));
             if ( expr(left(root)) > 0 ){
+                while (block_root != NULL) {
+                    proc(left(block_root));
+                    block_root = right(block_root);
+                    //printf("Node tag: %d\n", tag(block_root));
+                }
+            }else if(right(right(root)) != NULL){
+                ast_t *block_root = right(right(root));
                 while (block_root != NULL) {
                     proc(left(block_root));
                     block_root = right(block_root);

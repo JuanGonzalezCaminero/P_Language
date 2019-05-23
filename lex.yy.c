@@ -472,7 +472,7 @@ char *yytext;
 #include "astree.h"
 #include "token.h"
 
-#define KWLEN  14
+#define KWLEN  15
 char *keywords[KWLEN] = {
 	"if",
 	"while",
@@ -488,6 +488,7 @@ char *keywords[KWLEN] = {
 	"exp",
 	"read",
 	"write",
+  "for",
 };
 
 unsigned keycodes[KWLEN] = {
@@ -505,6 +506,7 @@ unsigned keycodes[KWLEN] = {
     EXP,
     READ,
     WRITE,
+    FOR,
 };
 
 static void lower(char *s);
@@ -512,8 +514,8 @@ static char *readStr(void);
 
 int yywrap(void) { return 1; }
 
-#line 515 "lex.yy.c"
-#line 516 "lex.yy.c"
+#line 517 "lex.yy.c"
+#line 518 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -730,9 +732,9 @@ YY_DECL
 		}
 
 	{
-#line 85 "pcc.l"
+#line 87 "pcc.l"
 
-#line 735 "lex.yy.c"
+#line 737 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -791,23 +793,23 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 86 "pcc.l"
+#line 88 "pcc.l"
 {return yytext[0];}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 88 "pcc.l"
+#line 90 "pcc.l"
 ;
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 90 "pcc.l"
+#line 92 "pcc.l"
 ;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 92 "pcc.l"
+#line 94 "pcc.l"
 {
         				unsigned i = 0;
                 int r=-1;
@@ -827,7 +829,7 @@ YY_RULE_SETUP
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 108 "pcc.l"
+#line 110 "pcc.l"
 {
 				yylineno++;
 				//printf("EOL\n");
@@ -836,7 +838,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 114 "pcc.l"
+#line 116 "pcc.l"
 {
 	              yyStr(yylval) = readStr();
 	              yyFlag(yylval) = fSTR;
@@ -846,14 +848,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 121 "pcc.l"
+#line 123 "pcc.l"
 {
 				return yytext[0];
 				}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 125 "pcc.l"
+#line 127 "pcc.l"
 {
 				//printf("LOGIC\n");
 				//return OPLOGIC;
@@ -889,7 +891,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 158 "pcc.l"
+#line 160 "pcc.l"
 {
 				//printf("ARITHMETIC\n");
 				//return OPARITHMETIC;
@@ -898,7 +900,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 164 "pcc.l"
+#line 166 "pcc.l"
 {
 				//printf("EQUALS\n");
 				return yytext[0];
@@ -906,7 +908,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 169 "pcc.l"
+#line 171 "pcc.l"
 {
 										//printf("NUMBER\n");
 										//Asignamos a yylval el valor leído
@@ -916,15 +918,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 176 "pcc.l"
+#line 178 "pcc.l"
 {}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 177 "pcc.l"
+#line 179 "pcc.l"
 ECHO;
 	YY_BREAK
-#line 927 "lex.yy.c"
+#line 929 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1929,7 +1931,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 177 "pcc.l"
+#line 179 "pcc.l"
 
 
 static void lower(char *s) {

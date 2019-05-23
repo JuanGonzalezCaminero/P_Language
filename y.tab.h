@@ -75,7 +75,8 @@ extern int yydebug;
     GREATER = 281,
     GEQ = 282,
     AND = 283,
-    OR = 284
+    OR = 284,
+    FOR = 285
   };
 #endif
 /* Tokens.  */
@@ -106,6 +107,7 @@ extern int yydebug;
 #define GEQ 282
 #define AND 283
 #define OR 284
+#define FOR 285
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -123,7 +125,7 @@ union YYSTYPE
         }   u;
     }   s;
 
-#line 127 "y.tab.h" /* yacc.c:1921  */
+#line 129 "y.tab.h" /* yacc.c:1921  */
 };
 
 typedef union YYSTYPE YYSTYPE;

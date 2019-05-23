@@ -30,7 +30,7 @@ static ast_t *blockRoot = NULL;
 
 %type <s> program progelement conditional_statement statement expression block
 
-%token <s> IDENTIFIER EOL NUMBER STRING IF WHILE ELSE SIN COS TAN ASIN ACOS ATAN LOG LOG10 EXP WRITE READ EQ NEQ NOT LESS LEQ GREATER GEQ AND OR '(' ')'
+%token <s> IDENTIFIER EOL NUMBER STRING IF WHILE ELSE SIN COS TAN ASIN ACOS ATAN LOG LOG10 EXP WRITE READ EQ NEQ NOT LESS LEQ GREATER GEQ AND OR '(' ')' FOR
 %start program
 
 %left OR
@@ -56,7 +56,6 @@ program: program progelement
 		 }|
 		 progelement
 		 {
-			 //printf("Valid program\n");
 			 //Añadimos al árbol la primera línea del programa, con la etiqueta
 			 // ";" y con hijos el nodo correspondiente a esta línea y el resto 
 			 // del programa
@@ -86,11 +85,24 @@ progelement: conditional_statement
 conditional_statement:	IF '(' expression ')' '{' block '}' 
 			{	
 				//Creamos un nodo con etiqueta IF, con hijos el árbol asociado a una expresión,
-				//cuyo valor será evaluado, y un subárbol asociado al bloque, que contiene las 
-				//sentencias dentro de él. Si la expresión evalúa a verdadero, se ejecutan las
-				//sentencias del bloque. Ocurre lo mismo con la sentencia While
+				//cuyo valor será evaluado, y un nodo que contiene dos hijos, un subárbol asociado
+				//al bloque, que contiene las sentencias dentro de él. Si la expresión evalúa a 
+				//verdadero, se ejecutan las sentencias del bloque. Ocurre lo mismo con la
+				//sentencia While
+				//El otro hijo de ese nodo es NULL indicando que este if no tiene un else asociado
 				$$.flag = fAST;
-			    $$.u.ast = mkNd(IF, $3.u.ast, $6.u.ast);
+			    $$.u.ast = mkNd(IF, $3.u.ast, mkNd('A', $6.u.ast, NULL));
+			}|
+			IF '(' expression ')' '{' block '}' ELSE '{' block '}'
+			{	
+				//Creamos un nodo con etiqueta IF, con hijos el árbol asociado a una expresión,
+				//cuyo valor será evaluado, y un nodo que contiene dos hijos, un subárbol asociado
+				//al bloque, que contiene las sentencias dentro de él. Si la expresión evalúa a 
+				//verdadero, se ejecutan las sentencias del bloque. Ocurre lo mismo con la
+				//sentencia While
+				//El otro hijo de ese nodo contiene un subárbol asociado al bloque del else
+				$$.flag = fAST;
+			    $$.u.ast = mkNd(IF, $3.u.ast,  mkNd('A', $6.u.ast, $10.u.ast));
 			}|
 			WHILE '(' expression ')' '{' block '}'
 			{
@@ -307,10 +319,6 @@ block:	block progelement
 			 //Añadimos al subárbol la primera línea del bloque, con etiqueta ";",
 			 //Devolvemos esta raíz, que será uno de los hijos del if o while al que
 			 //esté asociado este bloque
-			/*printf("First line\n");
-			if(blockRoot == NULL){
-				printf("Block root null\n");
-			}*/
 			 blockRoot = NULL;
 			 blockRoot = appR(';', blockRoot, $1.u.ast);
 			 $$.u.ast = blockRoot;
@@ -331,6 +339,7 @@ int yyerror(char *str) {
 extern FILE *yyin;
 
 int main(int argc, char *argv[]) {
+	/*
 
   if (argc!=2) {
     puts("\nUsage: program <filename>\n");
@@ -357,7 +366,7 @@ int main(int argc, char *argv[]) {
   fclose(fIn);
   evaluate(astRoot);
   return 0;
-  
+  */
   
   yyparse();
   evaluate(astRoot);
