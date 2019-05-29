@@ -65,18 +65,20 @@ extern int yydebug;
     LOG = 271,
     LOG10 = 272,
     EXP = 273,
-    WRITE = 274,
-    READ = 275,
-    EQ = 276,
-    NEQ = 277,
-    NOT = 278,
-    LESS = 279,
-    LEQ = 280,
-    GREATER = 281,
-    GEQ = 282,
-    AND = 283,
-    OR = 284,
-    FOR = 285
+    CEIL = 274,
+    FLOOR = 275,
+    WRITE = 276,
+    READ = 277,
+    EQ = 278,
+    NEQ = 279,
+    NOT = 280,
+    LESS = 281,
+    LEQ = 282,
+    GREATER = 283,
+    GEQ = 284,
+    AND = 285,
+    OR = 286,
+    FOR = 287
   };
 #endif
 /* Tokens.  */
@@ -96,18 +98,20 @@ extern int yydebug;
 #define LOG 271
 #define LOG10 272
 #define EXP 273
-#define WRITE 274
-#define READ 275
-#define EQ 276
-#define NEQ 277
-#define NOT 278
-#define LESS 279
-#define LEQ 280
-#define GREATER 281
-#define GEQ 282
-#define AND 283
-#define OR 284
-#define FOR 285
+#define CEIL 274
+#define FLOOR 275
+#define WRITE 276
+#define READ 277
+#define EQ 278
+#define NEQ 279
+#define NOT 280
+#define LESS 281
+#define LEQ 282
+#define GREATER 283
+#define GEQ 284
+#define AND 285
+#define OR 286
+#define FOR 287
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -125,7 +129,7 @@ union YYSTYPE
         }   u;
     }   s;
 
-#line 129 "y.tab.h" /* yacc.c:1921  */
+#line 133 "y.tab.h" /* yacc.c:1921  */
 };
 
 typedef union YYSTYPE YYSTYPE;

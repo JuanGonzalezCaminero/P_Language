@@ -162,6 +162,10 @@ static double expr(ast_t *root) {
             return log10( expr(left(root)) );
         case EXP:
             return exp( expr(left(root)) );
+        case CEIL:
+            return ceil( expr(left(root)) );
+        case FLOOR:
+            return floor( expr(left(root)) );
         default:
             prError((unsigned short)lnum(root),"Unknown tag in expr AST %u\n",tag(root),NULL);
             break;
@@ -229,16 +233,31 @@ static void proc(ast_t *root) {
             break;
 
         case WHILE:
-
             while ( expr(left(root)) > 0 ){
-                block_root = right(root);
+                ast_t * block_root_while = right(root);
+                while (block_root_while != NULL) {
+                    proc(left(block_root_while));
+                    block_root_while = right(block_root_while);
+                }
+            }
+            break;
+        
+        
+        case FOR:
+            //Ejecutamos la primera expresión del for
+            proc(left(left(root)));
+            //Mientras la segunda expresión del for evalue a true, ejecutamos el bloque asociado
+            while(expr(right(left(root)))){
+                block_root = right(right(root));
                 while (block_root != NULL) {
                     proc(left(block_root));
                     block_root = right(block_root);
                 }
+                //Ejecutamos la expresión de la derecha del for
+                proc(left(right(root)));
             }
             break;
-
+        
         default:
             prError((unsigned short)lnum(root),"Unknown tag in statement AST %u\n",tag(root),NULL);
             break;

@@ -30,7 +30,7 @@ static ast_t *blockRoot = NULL;
 
 %type <s> program progelement conditional_statement statement expression block
 
-%token <s> IDENTIFIER EOL NUMBER STRING IF WHILE ELSE SIN COS TAN ASIN ACOS ATAN LOG LOG10 EXP WRITE READ EQ NEQ NOT LESS LEQ GREATER GEQ AND OR '(' ')' FOR
+%token <s> IDENTIFIER EOL NUMBER STRING IF WHILE ELSE SIN COS TAN ASIN ACOS ATAN LOG LOG10 EXP CEIL FLOOR WRITE READ EQ NEQ NOT LESS LEQ GREATER GEQ AND OR '(' ')' FOR
 %start program
 
 %left OR
@@ -91,7 +91,7 @@ conditional_statement:	IF '(' expression ')' '{' block '}'
 				//sentencia While
 				//El otro hijo de ese nodo es NULL indicando que este if no tiene un else asociado
 				$$.flag = fAST;
-			    $$.u.ast = mkNd(IF, $3.u.ast, mkNd('A', $6.u.ast, NULL));
+			    $$.u.ast = mkNd(IF, $3.u.ast, mkNd(';', $6.u.ast, NULL));
 			}|
 			IF '(' expression ')' '{' block '}' ELSE '{' block '}'
 			{	
@@ -102,13 +102,19 @@ conditional_statement:	IF '(' expression ')' '{' block '}'
 				//sentencia While
 				//El otro hijo de ese nodo contiene un subárbol asociado al bloque del else
 				$$.flag = fAST;
-			    $$.u.ast = mkNd(IF, $3.u.ast,  mkNd('A', $6.u.ast, $10.u.ast));
+			    $$.u.ast = mkNd(IF, $3.u.ast,  mkNd(';', $6.u.ast, $10.u.ast));
 			}|
 			WHILE '(' expression ')' '{' block '}'
 			{
 				$$.flag = fAST;
 			    $$.u.ast = mkNd(WHILE, $3.u.ast, $6.u.ast);
+			}|
+			FOR '(' IDENTIFIER '=' expression ';' expression ';' IDENTIFIER '=' expression ')' '{' block '}'
+			{
+				$$.flag = fAST;
+				$$.u.ast = mkNd(FOR, mkNd(';', mkNd('=', mkSlf(IDENTIFIER,$3.u.vStr), $5.u.ast), $7.u.ast), mkNd(';', mkNd('=', mkSlf(IDENTIFIER,$9.u.vStr), $11.u.ast), $14.u.ast));
 			};
+
 
 statement: 	IDENTIFIER '=' expression
 			{	
@@ -305,6 +311,18 @@ expression:	IDENTIFIER
 				  $$.flag = fAST;
       			  $$.u.ast = mkNd(EXP,$3.u.ast,NULL);
 			};
+			|
+			CEIL '(' expression ')'
+			{
+				  $$.flag = fAST;
+      			  $$.u.ast = mkNd(EXP,$3.u.ast,NULL);
+			};
+			|
+			FLOOR '(' expression ')'
+			{
+				  $$.flag = fAST;
+      			  $$.u.ast = mkNd(EXP,$3.u.ast,NULL);
+			};
 
 block:	block progelement
 		{
@@ -339,8 +357,7 @@ int yyerror(char *str) {
 extern FILE *yyin;
 
 int main(int argc, char *argv[]) {
-	/*
-
+	
   if (argc!=2) {
     puts("\nUsage: program <filename>\n");
     fflush(stdout);
@@ -366,7 +383,7 @@ int main(int argc, char *argv[]) {
   fclose(fIn);
   evaluate(astRoot);
   return 0;
-  */
+  
   
   yyparse();
   evaluate(astRoot);

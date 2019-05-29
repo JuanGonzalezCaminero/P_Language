@@ -1,0 +1,18 @@
+a=0;
+b=10;
+while(a!=b){
+	write("a: ", a);
+	write(", ");
+	write("b: ", b);
+	write("\n");
+	a = a+1;
+	b = b-1;
+
+	if(a!=b){
+		write("a!=b\n");
+	}
+}
+write("a: ", a);
+write(", ");
+write("b: ", b);
+write("\n");

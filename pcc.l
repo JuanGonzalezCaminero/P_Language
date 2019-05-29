@@ -6,7 +6,7 @@
 #include "astree.h"
 #include "token.h"
 
-#define KWLEN  15
+#define KWLEN  17
 char *keywords[KWLEN] = {
 	"if",
 	"while",
@@ -23,6 +23,8 @@ char *keywords[KWLEN] = {
 	"read",
 	"write",
   "for",
+  "ceil",
+  "floor",
 };
 
 unsigned keycodes[KWLEN] = {
@@ -41,6 +43,8 @@ unsigned keycodes[KWLEN] = {
     READ,
     WRITE,
     FOR,
+    CEIL,
+    FLOOR,
 };
 
 static void lower(char *s);
@@ -70,9 +74,11 @@ FLOAT1    ({DIGITS}"."{DIGITS})
 FLOAT2    ({DIGITS}{EXP})
 FLOAT3    ({DIGITS}"."{DIGITS}{EXP})
 
-STRSTART  (["\'])
+CHAR      (\'.\')
 
-STREND (['"])
+STRSTART  (["])
+
+STREND (["'])
 
 EOL	  ([';'])
 
@@ -113,7 +119,13 @@ EQUALS		  ("=")
 				//return EOL;
 				}
 
-{STRSTART}      {
+{CHAR}    {
+          yylval.s.u.vStr = calloc(1, 1*sizeof(char));
+          strncpy(yylval.s.u.vStr, &yytext[1], 1);
+          return STRING;
+          }
+
+{STRSTART}    {
 	              yyStr(yylval) = readStr();
 	              yyFlag(yylval) = fSTR;
 	              

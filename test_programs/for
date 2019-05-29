@@ -1,0 +1,40 @@
+write("Bucle hacia arriba:\n");
+for(a=0; a<10; a=a+1){
+	write("a = ", a);
+	write("\n");
+}
+
+write("Bucle hacia abajo:\n");
+for(a=10; a>0; a=a-1){
+	write("a = ", a);
+	write("\n");
+}
+
+write("Bucles anidados:\n");
+for(a=0; a<10; a=a+1){
+
+	for(b=0; b<10; b=b+1){
+		write(a);
+		write(" ");
+	}
+	write("\n");
+}
+
+c=0;
+write("Bucles anidados con if anidado:\n");
+for(a=0; a<10; a=a+1){
+
+	for(b=0; b<10; b=b+1){
+
+		if(a==b || a==9-b){
+			write(a);
+		}else{
+			write("  ");
+		}
+		/*
+		write(a);
+		write(" ");
+		*/
+	}
+	write("\n");
+}
