@@ -234,10 +234,10 @@ static void proc(ast_t *root) {
 
         case WHILE:
             while ( expr(left(root)) > 0 ){
-                ast_t * block_root_while = right(root);
-                while (block_root_while != NULL) {
-                    proc(left(block_root_while));
-                    block_root_while = right(block_root_while);
+                block_root = right(root);
+                while (block_root != NULL) {
+                    proc(left(block_root));
+                    block_root = right(block_root);
                 }
             }
             break;

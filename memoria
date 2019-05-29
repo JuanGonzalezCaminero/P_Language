@@ -1,3 +1,0 @@
-Defino las palabras clave en el lex al igual que en la charla, con un array para las palabras y otro para
-los códigos asociados, y hago que al encontrar un identificador se compruebe primero si es una palabra clave.
-

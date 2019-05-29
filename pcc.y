@@ -12,9 +12,6 @@ int yyerror(char *str);
 
 static ast_t *astRoot = NULL;
 
-//Used to construct sub-trees associated to code blocks
-static ast_t *blockRoot = NULL;
-
 %}
 
 %union {
@@ -315,34 +312,30 @@ expression:	IDENTIFIER
 			CEIL '(' expression ')'
 			{
 				  $$.flag = fAST;
-      			  $$.u.ast = mkNd(EXP,$3.u.ast,NULL);
+      			  $$.u.ast = mkNd(CEIL,$3.u.ast,NULL);
 			};
 			|
 			FLOOR '(' expression ')'
 			{
 				  $$.flag = fAST;
-      			  $$.u.ast = mkNd(EXP,$3.u.ast,NULL);
+      			  $$.u.ast = mkNd(FLOOR,$3.u.ast,NULL);
 			};
 
 block:	block progelement
 		{
 			 //Añadimos una línea al subárbol, con etiqueta ";" y con hijos el nodo 
 			 //correspondiente a esta línea y las líneas siguientes
-			 blockRoot = appR(';', blockRoot, $2.u.ast);
-			 //$$.u.ast = blockRoot;
-			 //blockRoot = NULL;
+			 //La raíz del árbol es el nodo asociado al block, es decir, la raíz que se
+			 //creó con la primera línea del bloque
+			 appR(';', $1.u.ast, $2.u.ast);
 		}|
 		progelement
 		{
 			 //Añadimos al subárbol la primera línea del bloque, con etiqueta ";",
 			 //Devolvemos esta raíz, que será uno de los hijos del if o while al que
 			 //esté asociado este bloque
-			 blockRoot = NULL;
-			 blockRoot = appR(';', blockRoot, $1.u.ast);
-			 $$.u.ast = blockRoot;
-			 
-			 //Hay que inicializar blockRoot para poder usarla con el siguiente bloque
-			 //blockRoot = NULL;
+			 //Las siguientes sentencias del bloque llamarán a appR sobre esta raíz
+			 $$.u.ast = appR(';', NULL, $1.u.ast);
 		};
 
 
@@ -357,7 +350,6 @@ int yyerror(char *str) {
 extern FILE *yyin;
 
 int main(int argc, char *argv[]) {
-	
   if (argc!=2) {
     puts("\nUsage: program <filename>\n");
     fflush(stdout);
@@ -384,9 +376,9 @@ int main(int argc, char *argv[]) {
   evaluate(astRoot);
   return 0;
   
-  
+  /*
   yyparse();
   evaluate(astRoot);
   return 0;
-  
+  */
 }

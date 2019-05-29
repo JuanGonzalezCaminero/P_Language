@@ -1,0 +1,91 @@
+eleccion = -1;
+
+while(eleccion!=0 && eleccion!=1 && eleccion!=2){
+	write("¿Que tipo de función quieres usar?\n");
+	write("0-Salir del programa\n");
+	write("1-Trigonométricas básicas\n");
+	write("2-Matemáticas elementales\n");
+
+	read(eleccion);
+
+	if(eleccion!=0 && (eleccion == 1 || eleccion == 2)){
+		if(eleccion==1){
+			funcion_elegida = -1;
+			while(funcion_elegida <= 0 || funcion_elegida >= 7){
+				write("¿Que función quieres usar?\n");
+				write("1-Sin\n");
+				write("2-Cos\n");
+				write("3-Tan\n");
+				write("4-Asin\n");
+				write("5-Acos\n");
+				write("6-Atan\n");
+				read(funcion_elegida);
+				if(funcion_elegida <= 0 || funcion_elegida >= 7){
+					write("Por favor, introduce un número del 1 al 6\n");
+				}
+			}
+			write("Introduce el argumento para la función: ");
+			read(argumento);
+			write("El resultado es: ");
+			if(funcion_elegida==1){
+				resultado = sin(argumento);
+			}
+			if(funcion_elegida==2){
+				resultado = cos(argumento);
+			}
+			if(funcion_elegida==3){
+				resultado = tan(argumento);
+			}
+			if(funcion_elegida==4){
+				resultado = asin(argumento);
+			}
+			if(funcion_elegida==5){
+				resultado = acos(argumento);
+			}
+			if(funcion_elegida==6){
+				resultado = atan(argumento);
+			}
+			write(resultado);
+			write("\n\n");
+		}else{
+			funcion_elegida = -1;
+			while(funcion_elegida <= 0 || funcion_elegida >= 6){
+				write("¿Que función quieres usar?\n");
+				write("1-Log\n");
+				write("2-Log10\n");
+				write("3-Exp\n");
+				write("4-Ceil\n");
+				write("5-Floor\n");
+				read(funcion_elegida);
+				if(funcion_elegida <= 0 || funcion_elegida >= 6){
+					write("Por favor, introduce un número del 1 al 5\n");
+				}
+			}
+			write("Introduce el argumento para la función: ");
+			read(argumento);
+			write("El resultado es: ");
+			if(funcion_elegida==1){
+				resultado = log(argumento);
+			}
+			if(funcion_elegida==2){
+				resultado = log10(argumento);
+			}
+			if(funcion_elegida==3){
+				resultado = exp(argumento);
+			}
+			if(funcion_elegida==4){
+				resultado = ceil(argumento);
+			}
+			if(funcion_elegida==5){
+				resultado = floor(argumento);
+			}
+			write(resultado);
+			write("\n\n");
+		}
+	}else{
+		if(eleccion!=0){
+			write("Por favor, introduce un número del 0 al 2\n");
+		}
+	}
+}
+

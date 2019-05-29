@@ -75,6 +75,7 @@ FLOAT2    ({DIGITS}{EXP})
 FLOAT3    ({DIGITS}"."{DIGITS}{EXP})
 
 CHAR      (\'.\')
+ESCAPE_CHAR (['][\\].['])
 
 STRSTART  (["])
 
@@ -124,6 +125,39 @@ EQUALS		  ("=")
           strncpy(yylval.s.u.vStr, &yytext[1], 1);
           return STRING;
           }
+
+{ESCAPE_CHAR} {
+                yylval.s.u.vStr = calloc(1, 1*sizeof(char));
+                switch(yytext[2]){
+                  case 'n':
+                    yylval.s.u.vStr[0]='\n';
+                    break;
+                  case 'a':
+                    yylval.s.u.vStr[0]='\a';
+                    break;
+                  case 'b':
+                    yylval.s.u.vStr[0]='\b';
+                    break;
+                  case 'f':
+                    yylval.s.u.vStr[0]='\f';
+                    break;
+                  case 'r':
+                    yylval.s.u.vStr[0]='\r';
+                    break;
+                  case 't':
+                    yylval.s.u.vStr[0]='\t';
+                    break;
+                  case 'v':
+                    yylval.s.u.vStr[0]='\v';
+                    break;
+                  case '\\':
+                    yylval.s.u.vStr[0]='\\';
+                    break;
+                  default:
+                    yylval.s.u.vStr[0]= '\\';
+                }
+                return STRING;
+              }
 
 {STRSTART}    {
 	              yyStr(yylval) = readStr();

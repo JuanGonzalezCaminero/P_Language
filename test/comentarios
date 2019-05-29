@@ -1,0 +1,12 @@
+a=1;
+b=10;
+//Comentario de una línea
+write("b = ", b);
+write("\n");
+/*Comentario multiínea
+b no se modifica
+b = 20;
+*/
+write("b = ", b);
+write("\n");
+//write("Esto no se imprime")
