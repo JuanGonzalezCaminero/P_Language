@@ -3,11 +3,11 @@ b=0;
 c=-1;
 
 write("a: ", a);
-write("\n");
+write('\n');
 write("b: ", b);
-write("\n");
+write('\n');
 write("c: ", c);
-write("\n");
+write('\n');
 
 if(a){
 	write("a es mayor que 0\n");

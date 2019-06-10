@@ -3,18 +3,18 @@ b = 3;
 c = 4;
 
 write("a = ", a);
-write("\n");
+write('\n');
 write("b = ", b);
-write("\n");
+write('\n');
 write("c = ", c);
-write("\n");
+write('\n');
 
 write("a + b * c = ");
 res = a + b * c;
 write(res);
-write("\n");
+write('\n');
 
 write("(a + b) * c = ");
 res = (a + b) * c;
 write(res);
-write("\n");
+write('\n');

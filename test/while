@@ -4,7 +4,7 @@ while(a!=b){
 	write("a: ", a);
 	write(", ");
 	write("b: ", b);
-	write("\n");
+	write('\n');
 	if(a!=b){
 		write("a!=b\n");
 	}
@@ -15,4 +15,4 @@ while(a!=b){
 write("a: ", a);
 write(", ");
 write("b: ", b);
-write("\n");
+write('\n');
